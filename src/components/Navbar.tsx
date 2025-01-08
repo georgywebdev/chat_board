@@ -1,16 +1,15 @@
 import { auth, signIn, signOut } from "@/auth";
+import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
 const Navbar = async () => {
   const session = await auth();
 
-  console.log("session", session);
-
   return (
-    <header>
-      <Link href="/">Home</Link>
-      <div>
+    <header className="p-5 shadow-sm">
+      <nav className="flex justify-between items-center">
+        <Link href="/">Home</Link>
         {session && session?.user ? (
           <form
             action={async () => {
@@ -18,7 +17,18 @@ const Navbar = async () => {
               await signOut({ redirectTo: "/" });
             }}
           >
-            <button type="submit">Sign Out</button>
+            <div className="flex items-center gap-3">
+              {session?.user?.image && (
+                <Image
+                  src={session.user.image}
+                  width={20}
+                  height={20}
+                  alt="User Icon"
+                />
+              )}
+
+              <button type="submit">Sign Out</button>
+            </div>
           </form>
         ) : (
           <form
@@ -27,10 +37,10 @@ const Navbar = async () => {
               await signIn("github");
             }}
           >
-            <button type="submit">Signin</button>
+            <button type="submit">Sign In</button>
           </form>
         )}
-      </div>
+      </nav>
     </header>
   );
 };
